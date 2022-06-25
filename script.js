@@ -3,6 +3,8 @@ const loader = document.getElementById('loader');
 
 
 // Unsplah APi
+let isPrePhotoLoaded = true;
+
 let photo_count = 30; // this become the initial loaded
 const img_orientation = 'landscape';
 const access_key = '-Oyt6yiHJa4P4c3XfHxeM4FAko_hdxPmoYGjMC0BOkA';
@@ -12,6 +14,10 @@ let imagesLoaded = 0;
 let totalImages  = 0;
 
 let apiUrl = `https://api.unsplash.com/photos/random?client_id=${access_key}&count=${photo_count}&orientation=landscape`;
+
+function updatePhotoCount(photoCount) {
+    apiUrl = `https://api.unsplash.com/photos/random?client_id=${access_key}&count=${photoCount}&orientation=landscape`;
+}
 
 // Showing all the images are ready
 function imgLoaded() {    
@@ -74,9 +80,16 @@ async function gettingUnsplahImagesFromApi() {
 
         const respond = await fetch(apiUrl);
         const data = await respond.json();
+
+        // adding images        
+        addImagesToDocument(data);
+
+        // updating count of the photos
+        if(isPrePhotoLoaded) {
+            updatePhotoCount(30);
+            isPrePhotoLoaded = false;
+        }
         
-        // adding images
-        addImagesToDocument(data);    
     } catch(err) {        
         console.log(err);
     }
